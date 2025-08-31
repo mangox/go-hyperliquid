@@ -8,7 +8,7 @@ import (
 	"github.com/mangox/go-hyperliquid"
 )
 
-func TestL2BookWebSocket(t *testing.T) {
+func TestBboWebSocket(t *testing.T) {
 	ws := hyperliquid.NewWebsocketClient("")
 
 	if err := ws.Connect(context.Background()); err != nil {
@@ -18,19 +18,17 @@ func TestL2BookWebSocket(t *testing.T) {
 
 	done := make(chan bool)
 
-	sub, err := ws.L2Book(
-		hyperliquid.L2BookSubscriptionParams{
-			Coin:     "BTC",
-			Mantissa: 2,
-			NSigFigs: 5,
+	sub, err := ws.Bbo(
+		hyperliquid.BboSubscriptionParams{
+			Coin: "BTC",
 		},
-		func(orderbook hyperliquid.L2Book, err error) {
+		func(bbo hyperliquid.Bbo, err error) {
 			if err != nil {
-				t.Errorf("Error in l2book callback: %v", err)
+				t.Errorf("Error in bbo callback: %v", err)
 				return
 			}
 
-			t.Logf("Received L2Book: %+v", orderbook)
+			t.Logf("Received bbo: %+v", bbo)
 
 			done <- true
 		},
@@ -45,7 +43,7 @@ func TestL2BookWebSocket(t *testing.T) {
 	select {
 	case <-done:
 		// Test passed
-	case <-time.After(10 * time.Second):
-		t.Error("Timeout waiting for candle update")
+	case <-time.After(5 * time.Second):
+		t.Error("Timeout waiting for bbo update")
 	}
 }
