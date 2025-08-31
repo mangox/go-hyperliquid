@@ -51,3 +51,9 @@ func (w WebData2) Key() string {
 	// The dispatching is handled by the subscription system based on the subscription key.
 	return ChannelWebData2
 }
+
+func (w Bbo) Key() string {
+	// WebData2 messages are user-specific but don't contain user info in the message itself.
+	// The dispatching is handled by the subscription system based on the subscription key.
+	return ChannelBbo
+}
